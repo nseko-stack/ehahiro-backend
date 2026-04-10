@@ -1,4 +1,4 @@
-const db = require('../config/database');
+const { supabase } = require('../config/supabase');
 
 class Notification {
     static async create(userId, message, type = 'in_app') {

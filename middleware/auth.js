@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const db = require('../config/database');
+const { supabase } = require('../config/supabase');
 
 const auth = async (req, res, next) => {
     try {
@@ -7,11 +7,14 @@ const auth = async (req, res, next) => {
         if (!token) return res.status(401).json({ error: 'No token provided' });
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const [rows] = await db.execute('SELECT * FROM users WHERE id = ?', [decoded.id]);
+        const { data: user, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', decoded.id)
+            .single();
+        if (error || !user) return res.status(401).json({ error: 'User not found' });
         
-        if (rows.length === 0) return res.status(401).json({ error: 'User not found' });
-        
-        req.user = rows[0];
+        req.user = user;
         next();
     } catch (error) {
         res.status(401).json({ error: 'Invalid token' });

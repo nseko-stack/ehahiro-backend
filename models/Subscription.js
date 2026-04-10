@@ -1,12 +1,14 @@
-const db = require('../config/database');
+const { supabase } = require('../config/supabase');
 
 class Subscription {
     static async create(userId, cropId, marketId) {
-        const [result] = await db.execute(
-            'INSERT INTO subscriptions (user_id, crop_id, market_id) VALUES (?, ?, ?)',
-            [userId, cropId, marketId]
-        );
-        return result.insertId;
+        const { data, error } = await supabase
+            .from('subscriptions')
+            .insert([{ user_id: userId, crop_id: cropId, market_id: marketId }])
+            .select()
+            .single();
+        if (error) throw error;
+        return data.id;
     }
 
     static async findByUserId(userId) {

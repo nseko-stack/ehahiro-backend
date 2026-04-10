@@ -1,4 +1,4 @@
-const db = require('../config/database');
+const { supabase } = require('../config/supabase');
 
 class Price {
     static async create(priceData) {
