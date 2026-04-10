@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: agri-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: SUPABASE_URL
+        generateValue: true
+      - key: SUPABASE_ANON_KEY
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://your-frontend.onrender.com
+    plan: free
