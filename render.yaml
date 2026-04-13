@@ -3,14 +3,16 @@ services:
     name: agri-backend
     env: node
     buildCommand: npm install
-    startCommand: npm start
+    startCommand: node index.js
+    plan: free
     envVars:
       - key: SUPABASE_URL
-        generateValue: true
+        sync: false
       - key: SUPABASE_ANON_KEY
-        generateValue: true
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: FRONTEND_URL
-        value: https://your-frontend.onrender.com
-    plan: free
+        value: https://ehahiro-frontend.vercel.app
+      - key: NODE_ENV
+        value: production

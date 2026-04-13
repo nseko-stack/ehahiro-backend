@@ -6,15 +6,19 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
+const allowedOrigins = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : ["http://localhost:3000", "https://ehahiro-frontend.vercel.app"];
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: allowedOrigins,
     methods: ["GET", "POST"]
   }
 });
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
@@ -49,7 +53,8 @@ app.get('/health', (req, res) => res.json({ status: 'OK', timestamp: new Date() 
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-    console.log(`🚀 Agri-Price Backend running on http://localhost:${PORT}`);
-    console.log(`📱 Health: http://localhost:${PORT}/health`);
-    console.log(`🔌 WebSocket: ws://localhost:${PORT}`);
+    const baseUrl = process.env.NODE_ENV === 'production' ? `https://ehahiro-backend-3.onrender.com` : `http://localhost:${PORT}`;
+    console.log(`🚀 Agri-Price Backend running on ${baseUrl}`);
+    console.log(`📱 Health: ${baseUrl}/health`);
+    console.log(`🔌 WebSocket: wss://${baseUrl.replace('https://', '').replace('http://', '')}`);
 });
